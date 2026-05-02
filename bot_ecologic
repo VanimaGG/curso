@@ -46,3 +46,5 @@ async def solucoes(ctx, *, tema=None):
 
     resposta = get_solucoes(tema)
     await ctx.send(resposta)
+
+bot.run("a")
