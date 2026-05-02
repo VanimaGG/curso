@@ -1,0 +1,48 @@
+import discord
+from discord.ext import commands
+import random
+import os
+
+from bot_logic import get_solucoes
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='$', intents=intents)
+
+
+@bot.event
+async def on_ready():
+    print(f'Você logou como {bot.user}')
+
+
+# ========================
+# MEME ALEATÓRIO
+# ========================
+@bot.command()
+async def meme(ctx):
+    pasta = "meme/images"
+
+    arquivos = [f for f in os.listdir(pasta) if f.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+
+    if not arquivos:
+        await ctx.send("Não tem imagens 😢")
+        return
+
+    img = random.choice(arquivos)
+
+    with open(f'{pasta}/{img}', 'rb') as f:
+        await ctx.send(file=discord.File(f))
+
+
+# ========================
+# SOLUÇÕES
+# ========================
+@bot.command()
+async def solucoes(ctx, *, tema=None):
+    if tema is None:
+        await ctx.send("Use assim: $solucoes carro")
+        return
+
+    resposta = get_solucoes(tema)
+    await ctx.send(resposta)
