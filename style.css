@@ -1,0 +1,25 @@
+body {
+    font-family: 'Inter', sans-serif;
+    font-size: 19px;
+    background-color: #5988FF; /* Azul */
+    color: #FFFFFF; /* Branco */
+}
+
+h1 {
+    color: #FD98FB; /* Rosa */
+    font-size: 28px;
+    font-family: 'Inter', sans-serif;
+}
+
+h2 {
+    color: #D6FF6B; /* Verde */
+    font-family: 'Inter', sans-serif;
+}
+
+p {
+    color: #FFFFFF;
+}
+
+ul {
+    color: #FFFFFF;
+}
