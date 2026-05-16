@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dependência tecnológica</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <h1>Dependência tecnológica: O quão ruim pode ser para a população</h1>
+        <p> A dependência tecnológica tem aumentado cada vez mais nos últimos anos.
+    Celulares, computadores e redes sociais fazem parte da rotina de milhões
+    de pessoas, mas o uso excessivo pode trazer diversos problemas para a saúde,
+    produtividade e convivência social.</p>
+
+        <h2>Vantagens e desvantagens:</h2>
+
+        <ul>
+            <li>Muitas pessoas passam horas conectadas, deixando de lado atividades importantes
+    como estudos, exercícios físicos e momentos com a família. Além disso, o excesso
+    de tecnologia pode causar ansiedade, dificuldade de concentração e problemas no sono.</li>
+            <li>Apesar de a tecnologia trazer benefícios para comunicação, aprendizado e entretenimento,
+    é importante utilizá-la com equilíbrio para evitar impactos negativos na vida das pessoas.</li>
+        </ul>
+
+        <img src="https://pebinhadeacucar.com.br/v2018/wp-content/uploads/2023/02/Crianca-se-entretendo-com-celular.jpg">
+        <iframe src="https://www.meteoblue.com/pt/tempo/widget/daily/ip_rom%c3%aania_675514?geoloc=fixed&tempunit=CELSIUS&windunit=KILOMETER_PER_HOUR&precipunit=MILLIMETER&days=7&coloured=monochrome&pictoicon=1&maxtemperature=1&mintemperature=1&windspeed=1&windgust=0&winddirection=1&uv=0&humidity=0&precipitation=0&precipitationprobability=1&spot=1&pressure=0&layout=dark&user_key=47987ef7075f267d&embed_key=b0d3739991c475a4&sig=4bb445b5919ee3350e78f545a828de267c2cb709b305ca9082db64970bd80ba5" frameborder="0" scrolling="NO" allowtransparency="true" sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox" style="width: 378px;height: 361px;border: 0;overflow: hidden;"></iframe><div><!-- DO NOT REMOVE THIS LINK --><a href="https://www.meteoblue.com/pt/tempo/semana/index" target="_blank" rel="noopener">meteoblue</a></div>" width="200" height="300"></iframe>
+    </body>
+</html>
