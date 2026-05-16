@@ -1,0 +1,36 @@
+body {
+    font-family: 'Inter', sans-serif;
+    font-size: 19px;
+    background-color: #5988FF; /* Azul */
+    color: #FFFFFF; /* Branco */
+}
+
+h1 {
+    color: #FD98FB; /* Rosa */
+    font-size: 28px;
+    font-family: 'Inter', sans-serif;
+    animation: color-change 3s infinite;
+    text-align: center;
+}
+
+@keyframes color-change {
+  0%   { color: rgb(255, 255, 255); }
+  50%  { color: rgb(247, 171, 234); }
+  75%  { color: rgb(149, 190, 145); }
+  100% { color: rgb(113, 156, 236); }
+}
+
+h2 {
+    color: #D6FF6B; /* Verde */
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+}
+
+p {
+    color: #FFFFFF;
+    text-align: center;
+}
+
+ul {
+    color: #FFFFFF;
+}
