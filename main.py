@@ -1,34 +1,85 @@
-from flask import Flask
-import random
+# Importações
+from flask import Flask, render_template, request
 
-frases: list[str] = [
-    "A maioria das pessoas que sofre de dependência tecnológica sente um forte estresse quando fica fora da área de cobertura de rede ou não pode usar seus dispositivos",
-    "De acordo com um estudo realizado em 2018, mais de 50% das pessoas entre 18 e 34 anos se consideram dependentes de seus smartphones."
-]
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return "<h1>Página Inicial</h1>"
+def result_calculate(size, lights, device):
+    """Calcula o consumo estimado com base na área, número de luminárias e aparelhos.
 
-@app.route("/random_fact")
-def random_fact():
-    return f"<p>{random.choice(frases)}</p>"
+    Args:
+        size (int): Tamanho (área) da residência
+        lights (int): Quantidade de luminárias
+        device (int): Quantidade de aparelhos
 
-@app.route("/about")
-def sobre():
-    return "<p>Vanima fez essa página</p>"
+    Returns:
+        float: Consumo estimado
+    """
+    # Coeficientes usados no cálculo do consumo de energia
+    home_coef = 100
+    light_coef = 0.04
+    devices_coef = 5
+    return size * home_coef + lights * light_coef + device * devices_coef
 
-@app.route("/secret")
-def gen_pass(pass_length=10):
-    elements = "qwertyuiopasdfghjklzxcvbnm-+/*!?$%#@"
-    password = ""
-    
-   
-    for i in range(pass_length):
-        password += random.choice(elements)
-        
-    return f"<p>Sua senha gerada é: {password}</p>"
+# A primeira página
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+# A segunda página
+@app.route('/<size>')
+def lights(size):
+    return render_template(
+                            'lights.html', 
+                            size=size
+                           )
+
+# A terceira página
+@app.route('/<size>/<lights>')
+def electronics(size, lights):
+    return render_template(
+                            'electronics.html',
+                            size = size, 
+                            lights = lights                           
+                           )
+
+# Cálculo
+@app.route('/<size>/<lights>/<device>')
+def end(size, lights, device):
+    return render_template('end.html', 
+                            result=result_calculate(int(size),
+                                                    int(lights), 
+                                                    int(device)
+                                                    )
+                        )
+
+# O formulário
+@app.route('/form')
+def form():
+    return render_template('form.html')
+
+# Resultados do formulário
+@app.route('/submit', methods=['POST'])
+def submit_form():
+    # Declarar variáveis para a coleta dos dados
+    name = request.form['name']
+    email = request.form['email']
+    address = request.form['address']
+    date = request.form['date']
+    # Aqui você pode salvar os dados ou enviá-los por email
+    with open('form.txt', 'a', encoding='utf-8') as f:
+        f.write(f"Nome: {name}\n")
+        f.write(f"Email: {email}\n")
+        f.write(f"Endereço: {address}\n")
+        f.write(f"Data: {date}\n")
+        f.write("-" * 20 + "\n")
+    return render_template('form_result.html', 
+                           # Coloque as variáveis aqui
+                           name=name,
+                           email=email,
+                           address=address,
+                           date=date
+                           )
 
 app.run(debug=True)
+

@@ -1,0 +1,5 @@
+Nome: Victor
+Email: victor@gmail.com
+Endereço: rua z n 90
+Data: 2026-06-06
+--------------------
