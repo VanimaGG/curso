@@ -1,85 +1,127 @@
 # Importações
-from flask import Flask, render_template, request
-
+from flask import Flask, render_template, request, redirect, session
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-def result_calculate(size, lights, device):
-    """Calcula o consumo estimado com base na área, número de luminárias e aparelhos.
+# Chave secreta para uso de session
+app.secret_key = 'my_top_secret_123'
 
-    Args:
-        size (int): Tamanho (área) da residência
-        lights (int): Quantidade de luminárias
-        device (int): Quantidade de aparelhos
+# Configuração do banco de dados
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///diary.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    Returns:
-        float: Consumo estimado
-    """
-    # Coeficientes usados no cálculo do consumo de energia
-    home_coef = 100
-    light_coef = 0.04
-    devices_coef = 5
-    return size * home_coef + lights * light_coef + device * devices_coef
+# Inicializando o banco
+db = SQLAlchemy(app)
 
-# A primeira página
-@app.route('/')
+# -------------------------
+# Tabela de Cards
+# -------------------------
+class Card(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    subtitle = db.Column(db.String(300), nullable=False)
+    text = db.Column(db.Text, nullable=False)
+    user_email = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return f'<Card {self.id}>'
+
+
+# -------------------------
+# Atividade #1
+# Criar a tabela User
+# -------------------------
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email =  db.Column(db.String(100), nullable = False)
+    senha = db.Column(db.String(50), nullable = False)
+# Iniciando página de conteúdo
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    error = ''
+    
+    if request.method == 'POST':
+        form_login = request.form['email']
+        form_password = request.form['password']
+
+        # Atividade #4. Verificação do usuário
+        users_db = User.query.all()
+        
+        for user in users_db:
+            # Trocado user.password por user.senha para bater com seu banco de dados
+            if form_login == user.email and form_password == user.senha:
+                session['user_email'] = user.email
+                return redirect('/index')
+        
+        # Se o loop terminar e não achar ninguém, o erro é definido e a página recarrega
+        error = 'Login ou senha incorretos'
+        return render_template('login.html', error=error)
+
+    # Se a requisição for 'GET' (acesso inicial à página), apenas renderiza o login limpo
+    return render_template('login.html')
+
+
+
+@app.route('/reg', methods=['GET', 'POST'])
+def reg():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        # Atividade #3. Salvar usuário no banco
+        user = User(email=email, senha=password)
+        db.session.add(user)
+        db.session.commit()
+        
+
+        return redirect('/')
+
+    return render_template('registration.html')
+
+
+# Iniciando página de conteúdo
+@app.route('/index')
 def index():
-    return render_template('index.html')
+    # Atividade #4. Mostrar apenas os cards do usuário logado
+    email = session.get('user_email')
+    cards = Card.query.filter_by(user_email=email).all()
+    return render_template('index.html', cards=cards)
 
-# A segunda página
-@app.route('/<size>')
-def lights(size):
-    return render_template(
-                            'lights.html', 
-                            size=size
-                           )
 
-# A terceira página
-@app.route('/<size>/<lights>')
-def electronics(size, lights):
-    return render_template(
-                            'electronics.html',
-                            size = size, 
-                            lights = lights                           
-                           )
+# Iniciando página de cartão
+@app.route('/card/<int:id>')
+def card(id):
+    card = Card.query.get(id)
+    
+    return render_template('card.html', card=card)
 
-# Cálculo
-@app.route('/<size>/<lights>/<device>')
-def end(size, lights, device):
-    return render_template('end.html', 
-                            result=result_calculate(int(size),
-                                                    int(lights), 
-                                                    int(device)
-                                                    )
-                        )
 
-# O formulário
-@app.route('/form')
-def form():
-    return render_template('form.html')
+# Iniciando página de criação de cartão
+@app.route('/create')
+def create():
+    return render_template('create_card.html')
 
-# Resultados do formulário
-@app.route('/submit', methods=['POST'])
-def submit_form():
-    # Declarar variáveis para a coleta dos dados
-    name = request.form['name']
-    email = request.form['email']
-    address = request.form['address']
-    date = request.form['date']
-    # Aqui você pode salvar os dados ou enviá-los por email
-    with open('form.txt', 'a', encoding='utf-8') as f:
-        f.write(f"Nome: {name}\n")
-        f.write(f"Email: {email}\n")
-        f.write(f"Endereço: {address}\n")
-        f.write(f"Data: {date}\n")
-        f.write("-" * 20 + "\n")
-    return render_template('form_result.html', 
-                           # Coloque as variáveis aqui
-                           name=name,
-                           email=email,
-                           address=address,
-                           date=date
-                           )
 
-app.run(debug=True)
+# Formulário de criação
+@app.route('/form_create', methods=['GET', 'POST'])
+def form_create():
+    if request.method == 'POST':
+        title = request.form['title']
+        subtitle = request.form['subtitle']
+        text = request.form['text']
 
+        # Atividade #4. Criar card em nome do usuário logado
+        email = session['user_email']
+        card = Card(title=title, subtitle=subtitle, text=text, user_email=email)
+
+        db.session.add(card)
+        db.session.commit()
+        return redirect('/index')
+    else:
+        return render_template('create_card.html')
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
