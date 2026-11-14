@@ -1,0 +1,44 @@
+import discord
+from discord.ext import commands
+import requests
+import pyttsx3
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+TOKEN = os.getenv("DISCORD_TOKEN")
+
+# Inicializando o bot
+intents = discord.Intents.default()
+intents.message_content = True  # Para ler mensagens
+bot = commands.Bot(command_prefix="$", intents=intents)
+
+# Inicializando o engine do pyttsx3 (mantido igual ao seu padrão)
+engine = pyttsx3.init()
+
+def get_weather(city : str):
+    # Adicionado o `+ Lua: %m` na formatação da URL
+    base_url = f"https://wttr.in/{city}?format=%C+%t+|+Lua:+%m"
+    response = requests.get(base_url)
+
+    if response.status_code == 200:
+        return response.text.strip()
+    else:
+        return "Não foi possivel obter os dados meteorológicos. Tente novamente mais tarde"
+
+# Função para síntese de fala
+def speak(text: str):
+    engine.say(text)  # Envia o texto para o sintetizador
+    engine.runAndWait()  # Executa a síntese de fala e aguarda a conclusão
+
+@bot.command()
+async def clima(ctx, *, city: str):
+    weather_info = get_weather(city)
+    if city:
+        await ctx.send(f"Tempo em {city}: {weather_info}")
+        speak(weather_info)
+    else:
+        await ctx.send("Você não enviou a cidade")
+
+# Inicia o bot
+bot.run(TOKEN)
